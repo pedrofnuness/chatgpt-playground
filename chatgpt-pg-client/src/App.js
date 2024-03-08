@@ -1,8 +1,27 @@
+import { useState } from 'react';
 import './normalize.css';
 import './App.css';
-import ChatGPTLogo from './assets/ChatGPTLogo';
+import ChatMessage from './components/ChatMessage';
 
 function App() {
+  const [input, setInput] = useState('');
+  const [chatLog, setChatLog] = useState([
+    {
+      user: "gpt",
+      message: "How can I help you today?"
+    },
+    {
+      user: "me",
+      message: "I want to create a great AI interface"
+    },
+  ]);
+  
+  async function handleSubmit (e) {
+    e.preventDefault();
+    setChatLog([...chatLog, { user: "me", message: input }])
+    setInput('');
+  }
+
   return (
     <div className="App">
       <aside className="sidemenu">
@@ -13,32 +32,22 @@ function App() {
       </aside>
       <section className="chatbox">
         <div className="chat-log">
-          <div className="chat-message">
-            <div className="chat-message-center">
-              <div className="avatar"></div>
-              <div className="message">text s</div>
-            </div>
-          </div>
-          <div className="chat-message chatgpt">
-            <div className="chat-message-center">
-              <div className="avatar chatgpt">
-                <ChatGPTLogo />
-              </div>
-              <div className="message">I am an AI</div>
-            </div>
-          </div>
+          {chatLog.map((message, index) => (
+            <ChatMessage key={index} message={message} />
+          ))}
         </div>
         <div className="chat-input-holder">
-          <textarea 
-            rows="1"
-            name="user-text-input" 
-            className="chat-input-textarea"
-            placeholder="Type your message here"
-          />
-
+          <form onSubmit={handleSubmit}>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              name="user-text-input" 
+              className="chat-input-textarea"
+              placeholder="Type your message here"
+            />
+          </form>
         </div>
       </section>
-      
     </div>
   );
 }
